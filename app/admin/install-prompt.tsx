@@ -71,14 +71,14 @@ export function InstallPrompt() {
               ? "Menú Compartir (↑) → Añadir a pantalla de inicio"
               : "Instala la app para abrirla como aplicación"}
           </p>
-          {!isIOS && deferredPrompt && (
+          {!isIOS && deferredPrompt != null ? (
             <button
               onClick={handleInstall}
               className="mt-3 w-full rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent/90"
             >
               Instalar aplicación
             </button>
-          )}
+          ) : null}
         </div>
         <button
           onClick={handleDismiss}
