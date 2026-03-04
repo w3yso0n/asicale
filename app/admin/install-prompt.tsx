@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Download, X } from "lucide-react";
 
 const DISMISS_KEY = "asicale-pwa-install-dismissed";
 
 export function InstallPrompt() {
+  const pathname = usePathname();
   const [deferredPrompt, setDeferredPrompt] = useState<unknown>(null);
   const [dismissed, setDismissed] = useState(true);
   const [isStandalone, setIsStandalone] = useState(false);
+
+  const isAdmin = pathname != null && pathname.startsWith("/admin");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -51,7 +55,8 @@ export function InstallPrompt() {
     localStorage.setItem(DISMISS_KEY, Date.now().toString());
   };
 
-  if (isStandalone || dismissed) return null;
+  // Solo mostrar en rutas de admin; nunca en la página pública
+  if (!isAdmin || isStandalone || dismissed) return null;
 
   const isIOS =
     typeof navigator !== "undefined" &&
@@ -65,13 +70,19 @@ export function InstallPrompt() {
           <Download className="h-5 w-5 text-accent" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-foreground">Acceso rápido al admin</p>
-          <p className="mt-0.5 text-sm text-muted">
-            {isIOS
-              ? "Menú Compartir (↑) → Añadir a pantalla de inicio"
-              : "Instala la app para abrirla como aplicación"}
+          <p className="font-semibold text-foreground">
+            {isAdmin ? "Añadir admin al inicio" : "Acceso rápido al admin"}
           </p>
-          {!isIOS && deferredPrompt != null ? (
+          <p className="mt-0.5 text-sm text-muted">
+            {isAdmin
+              ? isIOS
+                ? "Menú Compartir (↑) → Añadir a pantalla de inicio. El icono abrirá el admin."
+                : "Menú del navegador (⋮) → Añadir a pantalla de inicio. Así el icono abrirá directamente el admin (no uses «Instalar aplicación»)."
+              : isIOS
+                ? "Menú Compartir (↑) → Añadir a pantalla de inicio"
+                : "Instala la app para abrirla como aplicación"}
+          </p>
+          {!isAdmin && !isIOS && deferredPrompt != null ? (
             <button
               onClick={handleInstall}
               className="mt-3 w-full rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent/90"
