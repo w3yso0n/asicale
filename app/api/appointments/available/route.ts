@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSchedule } from "@/lib/schedule";
 import {
   parseISO,
   startOfDay,
@@ -11,37 +12,6 @@ import {
   isBefore,
   getDay,
 } from "date-fns";
-import { readFile } from "fs/promises";
-import path from "path";
-
-interface ScheduleDay {
-  dayOfWeek: number;
-  isOpen: boolean;
-  openTime: string;
-  closeTime: string;
-}
-
-const DEFAULT_SCHEDULE: ScheduleDay[] = [
-  { dayOfWeek: 0, isOpen: false, openTime: "09:00", closeTime: "19:00" },
-  { dayOfWeek: 1, isOpen: true, openTime: "09:00", closeTime: "19:00" },
-  { dayOfWeek: 2, isOpen: true, openTime: "09:00", closeTime: "19:00" },
-  { dayOfWeek: 3, isOpen: true, openTime: "09:00", closeTime: "19:00" },
-  { dayOfWeek: 4, isOpen: true, openTime: "09:00", closeTime: "19:00" },
-  { dayOfWeek: 5, isOpen: true, openTime: "09:00", closeTime: "19:00" },
-  { dayOfWeek: 6, isOpen: true, openTime: "09:00", closeTime: "19:00" },
-];
-
-async function loadSchedule(): Promise<ScheduleDay[]> {
-  try {
-    const raw = await readFile(
-      path.join(process.cwd(), "data", "schedule.json"),
-      "utf-8",
-    );
-    return JSON.parse(raw) as ScheduleDay[];
-  } catch {
-    return DEFAULT_SCHEDULE;
-  }
-}
 
 const SLOT_INTERVAL_MIN = 30;
 
@@ -73,7 +43,7 @@ export async function GET(request: NextRequest) {
     const parsed = parseISO(date);
     const dow = getDay(parsed);
 
-    const schedule = await loadSchedule();
+    const schedule = await getSchedule();
     const daySchedule = schedule.find((s) => s.dayOfWeek === dow);
 
     if (!daySchedule || !daySchedule.isOpen) {
