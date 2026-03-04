@@ -1,0 +1,20 @@
+{
+  "name": "Asicale Barber",
+  "short_name": "Asicale Barber",
+  "description": "Agenda citas y administra tu barbería",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f0f0f",
+  "theme_color": "#d4a853",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

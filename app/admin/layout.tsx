@@ -13,6 +13,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { InstallPrompt } from "./install-prompt";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -104,6 +105,8 @@ export default function AdminLayout({
 
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
+
+      <InstallPrompt />
     </div>
   );
 }
