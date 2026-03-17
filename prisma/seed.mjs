@@ -8,7 +8,7 @@ async function main() {
   await prisma.service.deleteMany({});
   await prisma.barber.deleteMany({});
 
-  const barbers = ["Christian", "Guero"];
+  const barbers = ["Christian", "Oscar"];
 
   for (const name of barbers) {
     await prisma.barber.create({
